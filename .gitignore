@@ -1,0 +1,46 @@
+# Obsidian local workspace and device-specific settings
+.obsidian/
+
+# Secrets and local configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+secrets/
+credentials/
+*credentials*
+*secret*
+
+# Virtual machine disks, installers and snapshots
+*.qcow2
+*.qcow
+*.vdi
+*.vmdk
+*.vhd
+*.vhdx
+*.ova
+*.ovf
+*.iso
+*.snap
+
+# Packet captures and raw security exports
+*.pcap
+*.pcapng
+*.evtx
+*.etl
+*.dump
+*.dmp
+
+# Logs, backups and temporary files
+*.log
+*.bak
+*.backup
+*.tmp
+*.swp
+*~
+.DS_Store
+Thumbs.db
