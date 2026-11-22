@@ -80,3 +80,13 @@ For Wazuh-specific operations, see [06 - Wazuh Operations Commands](06%20-%20Waz
 - [Linux Administration](../Cybersecurity/02-Linux%20Administration/Linux%20Administration.md)
 - [OverTheWire Bandit](../CTF%20%26%20Practice/OverTheWire%20Bandit%20Notes.md)
 - [Host Inventory & Lab Setup](../Cybersecurity/01-Infrastructure/Host%20Inventory%20%26%20Lab%20Setup.md)
+
+
+## File and text inspection used during Wazuh troubleshooting
+
+| Command used / pattern | What it does | General use and useful options | Where I used it |
+|---|---|---|---|
+| `sudo cp SOURCE DESTINATION` | Copies a file, used here to preserve the original Wazuh Manager/Filebeat configuration before editing. | Keep the backup path explicit. A backup is useful only if I know which original file it represents and can restore it deliberately. | [Project 01 — archive configuration backup](../Projects/Project%2001%20-%20Windows%20Endpoint%20Detection%20%26%20Investigation/07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md#1-enable-json-archives-on-the-manager) |
+| `grep -n 'PATTERN' FILE` | Searches text and prints matching line numbers. | `-F` treats the pattern as fixed text; `-E` enables extended regular expressions; `-i` ignores case; `-A N` / `-B N` show context lines. | [Project 01 — inspect Filebeat configuration](../Projects/Project%2001%20-%20Windows%20Endpoint%20Detection%20%26%20Investigation/07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md#2-enable-archive-indexing-in-filebeat) |
+| `tail -n 40 FILE` | Prints the last 40 lines of a file. | Change the number after `-n`; `tail -f FILE` follows appended log lines. Useful for a quick recent-log sample, not a substitute for filtering by time or component. | [Project 01 — inspect Filebeat application logs](../Projects/Project%2001%20-%20Windows%20Endpoint%20Detection%20%26%20Investigation/07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md#how-i-verified-each-stage) |
+| `find PATH -maxdepth 2 -type f -printf '%p (%s bytes)\n'` | Lists files under a path, limited to two directory levels, and prints each path and size. | `-type f` selects regular files; `-maxdepth` limits traversal; `-printf` formats output (GNU `find`). | [Project 01 — inspect Filebeat registry files](../Projects/Project%2001%20-%20Windows%20Endpoint%20Detection%20%26%20Investigation/07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md#how-i-verified-each-stage) |

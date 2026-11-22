@@ -10,7 +10,7 @@ status: in-progress
 
 **Project 01 is not finished.** The endpoint telemetry foundation is substantially configured and partially validated. The main detection-engineering and investigation work remains.
 
-The current achievement is meaningful: Windows can generate Sysmon and PowerShell telemetry, the Wazuh Agent is configured to collect both channels, and both providers are visible in the Dashboard.
+The current achievement is meaningful: Windows can generate Sysmon and PowerShell telemetry, the Wazuh Agent is configured to collect both channels, and raw Sysmon events are now confirmed in the Wazuh archive index and searchable through Discover.
 
 However, this is infrastructure and telemetry validation—not yet a complete detection-and-response project.
 
@@ -25,7 +25,10 @@ However, this is infrastructure and telemetry validation—not yet a complete de
 | PowerShell logging | Locally validated | Script Block Logging enabled; controlled 4104 marker found locally |
 | Wazuh Sysmon collection | Validated | Sysmon provider events visible |
 | Wazuh PowerShell collection | Validated | PowerShell provider events visible after agent restart |
-| Exact marker in Wazuh | Not confirmed | Provider visibility confirmed, exact marker not separately checked |
+| Wazuh Manager JSON archives | Validated | Windows events written to `archives.json` |
+| Filebeat archive indexing | Validated | `archives.enabled: true`; archive index populated |
+| Sysmon raw event in Discover | Validated | Event ID 13 retrieved from `wazuh-archives-4.x-*` |
+| Exact 4104 marker in Wazuh archives | Not confirmed | Need to retrieve the controlled marker from the archive data view |
 | Controlled suspicious scenario | Not started | Needs safe, repeatable simulation |
 | Custom Wazuh detection | Not started | Rule logic and tuning remain |
 | Event correlation | Not started | Need process/script/file/task timeline |
@@ -39,8 +42,7 @@ Complete the five-module foundation track in [05 - Investigation Methodology and
 ### Priority 2 — Finish telemetry validation
 - Generate a fresh controlled 4104 event.
 - Search for the exact marker in Wazuh.
-- Inspect the indexed document's actual fields.
-- Determine whether raw event archives are enabled or whether only alerts are available in the current view.
+- Inspect the indexed 4104 document's actual fields.
 - Record evidence and any configuration limitations.
 
 ### Priority 3 — Design a controlled scenario
@@ -78,3 +80,8 @@ Do not download or execute untrusted scripts. Use scripts written for the lab an
 The project is at the **telemetry foundation / pre-detection stage**.
 
 A reasonable next move is to pause the attack scenario and complete the Windows fundamentals track. This directly addresses the knowledge gaps exposed during the first investigation exercises and will make later detection work more meaningful.
+
+
+## Latest checkpoint
+
+- [07 - Wazuh Raw Archive Collection and Indexing](07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md) documents the root cause, configuration changes, commands, validation evidence and remaining limits.

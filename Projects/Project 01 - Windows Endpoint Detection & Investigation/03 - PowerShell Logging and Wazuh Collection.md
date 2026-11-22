@@ -104,6 +104,8 @@ data.win.system.providerName: "Microsoft-Windows-PowerShell"
 After restarting `WazuhSvc`, PowerShell provider events became visible in the Dashboard.
 
 Important:
+- Search field paths should be based on actual indexed documents.
+- Search-bar suggestions are field suggestions, not a complete inventory of collected event providers.
 - A collected event does not necessarily generate an alert.
 - Threat Hunting visibility depends on the data view/index and Wazuh configuration.
 

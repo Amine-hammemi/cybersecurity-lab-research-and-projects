@@ -39,7 +39,7 @@ data.win.system.providerName: "Microsoft-Windows-PowerShell"
 ## Not yet validated
 
 - Exact controlled marker `SOC-Project01-4104-Test` visible in a Wazuh event document.
-- Whether raw PowerShell events are stored in Wazuh archives or a raw-event index.
+- Exact controlled PowerShell 4104 marker visible in the Wazuh archive index.
 - A custom Wazuh detection rule for the target behaviour.
 - A complete controlled suspicious-activity simulation.
 - Correlation across Sysmon, PowerShell, Security and Task Scheduler telemetry.
@@ -61,8 +61,23 @@ When capturing screenshots or exporting event data for a public portfolio:
 |---|---|
 | Sysmon installation and local telemetry | Validated |
 | PowerShell Script Block Logging | Validated locally |
-| Sysmon event visibility in Wazuh | Validated |
+| Sysmon event visibility in Wazuh alerts/search | Validated |
+| Raw Sysmon archive indexing | Validated |
 | PowerShell provider visibility in Wazuh | Validated |
-| Exact test marker end-to-end | Not confirmed |
+| Exact PowerShell 4104 marker end-to-end | Not confirmed |
 | Custom alert generation | Not started |
 | Full incident investigation | Not started |
+
+
+### Raw archive collection and indexing (2026-11-22)
+- Enabled Manager JSON archive generation with `<logall_json>yes</logall_json>`; left `<logall>no</logall>` unchanged.
+- Confirmed Windows/Sysmon records in `/var/ossec/logs/archives/archives.json`.
+- Enabled `archives.enabled: true` in the Filebeat Wazuh module; left alert indexing enabled.
+- Filebeat configuration test returned `Config OK`; Filebeat service was active after restart.
+- `filebeat test output` verified Indexer connectivity, TLS and authentication (Indexer reported version `7.10.2`).
+- Filebeat registry contained state for the archive JSON file. This proves the input was tracked, not that every event was indexed.
+- Index `wazuh-archives-4.x-2026.11.22` was green/open. Document count was 799, then 888 (+89) on a later check.
+- Created the `wazuh-archives` data view with pattern `wazuh-archives-4.x-*` and time field `timestamp`.
+- Retrieved a Sysmon Event ID 13 document in Discover from the archive index. The indexed document showed `services.exe` setting the `UsoSvc\DelayedAutostart` registry value.
+- The document timestamp was 00:20:27 UTC, corresponding to approximately 01:20:27 local time (UTC+1).
+- This validates raw Sysmon event indexing and search. The exact controlled PowerShell 4104 marker is still not confirmed in the archive index.

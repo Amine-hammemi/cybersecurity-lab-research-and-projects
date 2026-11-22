@@ -61,11 +61,12 @@ Neither event alone proves malicious intent. Analysts need context, sequence, au
 
 ## 4. Other useful Windows telemetry for later investigation
 
-| Source / Event                         | Why it may matter                          |
-| -------------------------------------- | ------------------------------------------ |
-| Security Event ID 4698                 | A scheduled task was created               |
-| TaskScheduler/Operational Event ID 106 | A task was registered                      |
-| TaskScheduler/Operational Event ID 140 | A task was updated                         |
-| Sysmon Event ID 1                      | Process launched by a task or other parent |
-| Sysmon Event ID 11                     | Script or payload file created             |
+| Source / Event | Why it may matter |
+|---|---|
+| Security Event ID 4698 | A scheduled task was created |
+| TaskScheduler/Operational Event ID 106 | A task was registered |
+| TaskScheduler/Operational Event ID 140 | A task was updated |
+| Sysmon Event ID 1 | Process launched by a task or other parent |
+| Sysmon Event ID 11 | Script or payload file created |
 
+Availability depends on audit policy, channel configuration, and Sysmon configuration. Verify that the relevant events are enabled and collected before relying on them.

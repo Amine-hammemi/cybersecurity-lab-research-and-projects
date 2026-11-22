@@ -209,6 +209,40 @@ So a stale entry is **used first and verified afterwards**, not checked before u
 |I pinged `.50` and the packet said `.5`|I pinged `.5` myself. No discrepancy|
 |A stale entry is checked before use|It is used immediately and verified afterwards|
 
+## Self-test
+
+> [!question]- 1. Why does ping cause ARP traffic first? Ping knows the destination IP, but Ethernet delivers by MAC, so Kali must ask "who has this IP?" before the first ICMP packet can be framed.
+
+> [!question]- 2. Why is the ARP request a broadcast and the reply a unicast? The asker doesn't know the owner's MAC, so it asks everyone. The request already carried the asker's MAC, so the owner can answer directly.
+
+> [!question]- 3. Why is the target MAC all zeros in the request? That is the unknown being asked for.
+
+> [!question]- 4. Which layer is missing from a ping compared with a web request? Transport (TCP). ICMP rides directly on IP.
+
+> [!question]- 5. What does TTL 64 on the reply tell me? Linux starts at 64 and each router subtracts 1, so no router was crossed.
+
+> [!question]- 6. Why did the second ping cause no ARP? The neighbor table already had the mapping.
+
+> [!question]- 7. Three ARP requests with no reply and then FAILED. What can I conclude? Address resolution did not complete. The target may be offline or absent, but a wrong subnet/VLAN, disconnected interface or Layer 2 filtering can produce a similar result. I need more evidence before concluding why.
+
+> [!question]- 8. What happens when I use a STALE entry? The packet goes out immediately with the cached MAC. The entry moves to DELAY, and if no proof of life arrives in 5 s it is probed.
+
+> [!question]- 9. Why can't ARP cross a router? It sits directly on Ethernet and is a broadcast on one local link.
+
+> [!question]- 10. What makes ARP spoofing possible? ARP has no authentication, and receivers cache any reply they get.
+
+## Open items
+
+- [ ] Did a PROBE happen between DELAY and REACHABLE? Check the capture, not the table.
+- [ ] Is the refresh a unicast probe to `:83` or a broadcast? Check `eth.dst` in a column.
+- [ ] Some repeated ARP packets looked like "source `:83`, who has .1, tell .88". That doesn't add up. Likely I mixed up the request with the reply, or read Destination instead of Source. Check with columns `eth.src`, `eth.dst`, `arp.opcode`, `arp.src.proto_ipv4`, `arp.dst.proto_ipv4`.
+- [ ] Does ping count as proof of life, or only TCP? Compare `ping` vs `curl` on a STALE entry.
+- [ ] What `used a/b/c` and `probes` mean in `ip -s neigh` (read `man ip-neighbour`). My guess about `probes` is unconfirmed.
+- [ ] Read `ucast_solicit`.
+- [ ] Verify the EtherType and IP protocol values in the table above, using my capture.
+
+I decided not to go deeper on these now. They belong to a later pass, so they don't block Module 2.
+
 ## Benefits
 
 **Skills gained**
@@ -218,6 +252,17 @@ So a stale entry is **used first and verified afterwards**, not checked before u
 - Verifying claims myself (MACs, settings, behavior) instead of trusting an explanation
 - Spotting my own wrong assumptions, like the router mistake
 - Using custom columns and filters to answer a question with evidence
+
+**Why it matters for my goal**
+
+- SOC and blue team: ARP anomalies, scans and unanswered requests are what alerts are built from
+- Pentest: I know how a scanner finds local hosts and why ARP can't be blocked locally
+- Troubleshooting: I can separate "no answer" from "dropped" with a capture
+- Foundation for ARP spoofing, Nmap host discovery and Suricata rules later
+
+**Interview answer**
+
+> "ARP maps an IP to a MAC on a local link. The host broadcasts a request and the owner replies directly. The answer is cached, entries go from reachable to stale to delay, and a stale entry is used first and re-verified after. It has no authentication, which is what ARP spoofing exploits."
 
 ## Command summary
 
