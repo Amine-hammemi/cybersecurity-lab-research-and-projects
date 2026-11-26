@@ -69,6 +69,57 @@ When capturing screenshots or exporting event data for a public portfolio:
 | Full incident investigation | Not started |
 
 
+### Controlled Sysmon Event ID 11 — end-to-end validation (2026-11-24)
+
+I validated a narrowly scoped Sysmon `FileCreate` rule and followed one controlled event through the complete raw-event pipeline.
+
+#### What I changed
+- Backed up the original Sysmon Modular configuration before editing it.
+- Added one `TargetFilename` include rule inside the existing `<FileCreate onmatch="include">` group. The rule matches the test filename `SOC-Project01-FileCreation-Test.txt` and does not enable broad file-creation monitoring.
+- Parsed the XML with PowerShell before applying it. The XML syntax check passed.
+- Reloaded the configuration with Sysmon and checked the active configuration output. The new rule appeared under `FileCreate`, not `FileCreateTime`.
+
+#### Why the first test did not produce the expected event
+- The first test file already existed. Running `Set-Content` again overwrote its contents; it did not create a new file.
+- Sysmon Event ID 11 records file creation, so overwriting an existing file was not a valid way to trigger this test.
+- I removed the old test file and used `New-Item` to create a fresh file. The matching Event ID 11 then appeared locally.
+
+#### Correlated evidence
+The same event was verified at each stage. Public documentation intentionally omits the live username, hostname, private IP and full user profile path.
+
+| Evidence | Observed value |
+|---|---|
+| Provider / channel | `Microsoft-Windows-Sysmon` / `Microsoft-Windows-Sysmon/Operational` |
+| Event ID | `11` — FileCreate |
+| Event Record ID | `17776` |
+| Rule name | `Project 01 controlled file-creation validation` |
+| Event time | `2026-11-24 19:33:39 UTC` |
+| Process | `powershell.exe` |
+| Process ID | `5028` |
+| Process GUID | `{f9f27d66-bdef-6b05-5803-000000000c00}` |
+| Target | `%TEMP%\SOC-Project01-FileCreation-Test.txt` |
+| Wazuh decoder | `windows_eventchannel` |
+| Wazuh agent name | `win11` |
+| Manager archive timestamp | `2026-11-24T19:33:39.586+0000` |
+
+The Windows event XML and Wazuh archive record matched on Event ID, Event Record ID, Process GUID, Process ID, target filename and event time. This establishes that the Manager archive record represents the same endpoint event, rather than an unrelated event with similar content.
+
+#### Discover validation
+- Found the event in the `wazuh-archives` data view.
+- Confirmed the structured fields were available and populated:
+  - `data.win.eventdata.ruleName`
+  - `data.win.eventdata.processGuid`
+  - `data.win.eventdata.processId`
+  - `data.win.eventdata.image`
+  - `data.win.eventdata.targetFilename`
+  - `data.win.system.eventRecordID`
+- The query also returned a separate Event ID 4672 record. That is a Windows Security special-privileges logon event, not the Sysmon file-creation event. Its presence alone is not evidence of malicious activity.
+
+#### What this proves — and what it does not
+- **Proven:** Sysmon generated the controlled Event ID 11; the Wazuh agent collected it; the Manager decoded and archived it; Filebeat/Indexer made it searchable; Discover exposed the expected structured fields.
+- **Not proven:** a custom Wazuh alert or detection rule. This was raw-event collection and search validation, not detection engineering.
+- **Not proven:** a complete suspicious-activity investigation or incident classification. One benign file-creation test is only a telemetry validation case.
+
 ### Raw archive collection and indexing (2026-11-22)
 - Enabled Manager JSON archive generation with `<logall_json>yes</logall_json>`; left `<logall>no</logall>` unchanged.
 - Confirmed Windows/Sysmon records in `/var/ossec/logs/archives/archives.json`.

@@ -47,6 +47,7 @@ The host is connected to this virtual network, so do not describe this as isolat
 - [04 - Validation Log](04%20-%20Validation%20Log.md)
 - [05 - Investigation Methodology and Learning Plan](05%20-%20Investigation%20Methodology%20and%20Learning%20Plan.md)
 - [06 - Project Status and Next Milestones](06%20-%20Project%20Status%20and%20Next%20Milestones.md)
+- [07 - Wazuh Raw Archive Collection and Indexing](07%20-%20Wazuh%20Raw%20Archive%20Collection%20and%20Indexing.md)
 
 ## Completion criteria
 

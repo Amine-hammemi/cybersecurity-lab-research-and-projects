@@ -243,8 +243,28 @@ At every boundary, I should write down the exact evidence before moving to the n
 - [x] Archive index created/populated and visible in Index Management.
 - [x] Archive data view created.
 - [x] Sysmon Event ID 13 retrieved from Discover.
+- [x] Controlled Sysmon Event ID 11 retrieved from the Manager archive and Discover, with matching endpoint identifiers.
 - [ ] Exact controlled PowerShell Event ID 4104 marker retrieved from the archive index.
 - [ ] Custom Wazuh detection rule and alert validated.
+
+## Controlled Sysmon Event ID 11 — archive and Discover proof (2026-11-24)
+
+After validating the event locally, I searched the Manager's raw archive for the unique test filename. The archive contained the Sysmon Event ID 11 with the same `eventRecordID` (`17776`), `processGuid`, `processId`, target filename and UTC event time as the Windows event XML.
+
+I then searched the `wazuh-archives` data view in Discover. The Event ID 11 record was present, and I expanded it to confirm that these structured fields were available:
+
+- `data.win.eventdata.ruleName`
+- `data.win.eventdata.processGuid`
+- `data.win.eventdata.processId`
+- `data.win.eventdata.image`
+- `data.win.eventdata.targetFilename`
+- `data.win.system.eventRecordID`
+
+This proves that the specific controlled Sysmon event crossed the Manager archive and indexing path and became searchable in Discover. It is stronger evidence than a populated index or a running Filebeat service because it follows one identifiable event through the pipeline.
+
+For the public portfolio, I record the target as `%TEMP%\SOC-Project01-FileCreation-Test.txt` and omit the real username, hostname, private IP and full profile path. The local evidence is retained separately in the lab.
+
+This is raw telemetry validation only. No custom Wazuh rule or alert was tested in this step.
 
 ## Related notes
 
