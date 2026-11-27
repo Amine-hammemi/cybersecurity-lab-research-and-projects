@@ -6,6 +6,7 @@ status: validated
 
 # Wazuh Raw Archive Collection and Indexing
 
+
 ## Why I investigated this
 
 I could see some Sysmon and PowerShell events in the Wazuh Dashboard, but I could not reliably find the raw Windows events I wanted to investigate. At first, I treated this as a general collection problem. The investigation showed that there were **two separate stages** to check:
@@ -232,20 +233,6 @@ Instead of running unrelated commands until something changes, I can split the p
 6. **Dashboard:** can I retrieve a real event from the archive data view using its provider, Event ID and timestamp?
 
 At every boundary, I should write down the exact evidence before moving to the next one. If a check fails, investigate that boundary instead of changing several components at once.
-
-## Current result
-
-- [x] Manager JSON archive generation enabled.
-- [x] Windows raw events observed in `archives.json`.
-- [x] Filebeat archive module enabled.
-- [x] Filebeat configuration validated and service restarted.
-- [x] Filebeat output connection to the Indexer verified.
-- [x] Archive index created/populated and visible in Index Management.
-- [x] Archive data view created.
-- [x] Sysmon Event ID 13 retrieved from Discover.
-- [x] Controlled Sysmon Event ID 11 retrieved from the Manager archive and Discover, with matching endpoint identifiers.
-- [ ] Exact controlled PowerShell Event ID 4104 marker retrieved from the archive index.
-- [ ] Custom Wazuh detection rule and alert validated.
 
 ## Controlled Sysmon Event ID 11 — archive and Discover proof (2026-11-24)
 

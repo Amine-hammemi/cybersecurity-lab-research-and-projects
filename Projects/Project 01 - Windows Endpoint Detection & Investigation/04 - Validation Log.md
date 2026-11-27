@@ -46,29 +46,6 @@ data.win.system.providerName: "Microsoft-Windows-PowerShell"
 - A complete investigation timeline.
 - A final incident report.
 
-## Evidence handling
-
-When capturing screenshots or exporting event data for a public portfolio:
-- Remove private IP addresses if they expose the home network or sensitive topology.
-- Remove MAC addresses, usernames where appropriate, hostnames if sensitive, tokens, credentials, and personal paths.
-- Do not publish the full unredacted agent configuration.
-- Record timestamps, event IDs, relevant fields, and the exact validation method.
-- Keep screenshots focused on the evidence needed to support the claim.
-
-## Current evidence maturity
-
-| Capability | Current status |
-|---|---|
-| Sysmon installation and local telemetry | Validated |
-| PowerShell Script Block Logging | Validated locally |
-| Sysmon event visibility in Wazuh alerts/search | Validated |
-| Raw Sysmon archive indexing | Validated |
-| PowerShell provider visibility in Wazuh | Validated |
-| Exact PowerShell 4104 marker end-to-end | Not confirmed |
-| Custom alert generation | Not started |
-| Full incident investigation | Not started |
-
-
 ### Controlled Sysmon Event ID 11 — end-to-end validation (2026-11-24)
 
 I validated a narrowly scoped Sysmon `FileCreate` rule and followed one controlled event through the complete raw-event pipeline.
@@ -87,20 +64,20 @@ I validated a narrowly scoped Sysmon `FileCreate` rule and followed one controll
 #### Correlated evidence
 The same event was verified at each stage. Public documentation intentionally omits the live username, hostname, private IP and full user profile path.
 
-| Evidence | Observed value |
-|---|---|
-| Provider / channel | `Microsoft-Windows-Sysmon` / `Microsoft-Windows-Sysmon/Operational` |
-| Event ID | `11` — FileCreate |
-| Event Record ID | `17776` |
-| Rule name | `Project 01 controlled file-creation validation` |
-| Event time | `2026-11-24 19:33:39 UTC` |
-| Process | `powershell.exe` |
-| Process ID | `5028` |
-| Process GUID | `{f9f27d66-bdef-6b05-5803-000000000c00}` |
-| Target | `%TEMP%\SOC-Project01-FileCreation-Test.txt` |
-| Wazuh decoder | `windows_eventchannel` |
-| Wazuh agent name | `win11` |
-| Manager archive timestamp | `2026-11-24T19:33:39.586+0000` |
+| Evidence                  | Observed value                                                      |
+| ------------------------- | ------------------------------------------------------------------- |
+| Provider / channel        | `Microsoft-Windows-Sysmon` / `Microsoft-Windows-Sysmon/Operational` |
+| Event ID                  | `11` — FileCreate                                                   |
+| Event Record ID           | `17776`                                                             |
+| Rule name                 | `Project 01 controlled file-creation validation`                    |
+| Event time                | `2026-11-24 19:33:39 UTC`                                           |
+| Process                   | `powershell.exe`                                                    |
+| Process ID                | `5028`                                                              |
+| Process GUID              | `{f9f27d66-bdef-6b05-5803-000000000c00}`                            |
+| Target                    | `%TEMP%\SOC-Project01-FileCreation-Test.txt`                        |
+| Wazuh decoder             | `windows_eventchannel`                                              |
+| Wazuh agent name          | `win11`                                                             |
+| Manager archive timestamp | `2026-11-24T19:33:39.586+0000`                                      |
 
 The Windows event XML and Wazuh archive record matched on Event ID, Event Record ID, Process GUID, Process ID, target filename and event time. This establishes that the Manager archive record represents the same endpoint event, rather than an unrelated event with similar content.
 
